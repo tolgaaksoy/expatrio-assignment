@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * The type Auth service.
+ * The implementation of the {@link AuthService} interface.
+ * This class provides methods for user authentication, creation and updating user authentication information.
  */
 @Slf4j
 @Service
@@ -58,6 +59,12 @@ public class AuthServiceImpl implements AuthService {
         this.userMapper = userMapper;
     }
 
+    /**
+     * Authenticates a user with the given login credentials and returns a JWT token and user roles.
+     *
+     * @param loginRequest the login request containing the username and password
+     * @return a {@link LoginResponse} object containing the JWT token and user roles
+     */
     @Override
     public LoginResponse authenticateUser(LoginRequest loginRequest) {
 
@@ -80,6 +87,12 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
+    /**
+     * Creates a new user with the given user details and returns the created user.
+     *
+     * @param request the request containing the user details
+     * @return the created user
+     */
     @Override
     public UserDAO createUser(CreateUserRequest request) {
         UserDAO userDAO = userMapper.toEntity(request);
@@ -87,6 +100,13 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.save(userDAO);
     }
 
+    /**
+     * Updates the authentication information of an existing user with the given user details and returns the updated user.
+     *
+     * @param request the request containing the user details
+     * @return the updated user
+     * @throws UserNotFoundException if the user with the given ID is not found
+     */
     @Override
     public UserDAO updateUserAuthenticationInformation(UpdateUserAuthenticationInfoRequest request) {
         UserDAO userDAO = userRepository.update(userMapper.toEntity(request));
