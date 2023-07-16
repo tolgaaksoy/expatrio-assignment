@@ -59,4 +59,6 @@ public interface JOOQRepository<T> {
      * @return the list
      */
     List<T> findAll(Integer page, Integer pageSize);
+
+    int count();
 }

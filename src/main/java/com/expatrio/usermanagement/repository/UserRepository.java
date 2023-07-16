@@ -1,6 +1,5 @@
 package com.expatrio.usermanagement.repository;
 
-
 import com.expatrio.usermanagement.model.dao.DepartmentDAO;
 import com.expatrio.usermanagement.model.dao.RoleDAO;
 import com.expatrio.usermanagement.model.dao.UserDAO;
@@ -8,12 +7,13 @@ import com.expatrio.usermanagement.model.tables.AuthRole;
 import com.expatrio.usermanagement.model.tables.AuthUser;
 import com.expatrio.usermanagement.model.tables.AuthUserRole;
 import com.expatrio.usermanagement.model.tables.Department;
+import com.expatrio.usermanagement.model.tables.records.AuthRoleRecord;
 import com.expatrio.usermanagement.model.tables.records.AuthUserRecord;
 import com.expatrio.usermanagement.model.tables.records.AuthUserRoleRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.SelectSeekStep1;
+import org.jooq.SelectLimitPercentAfterOffsetStep;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +32,7 @@ public class UserRepository implements JOOQRepository<UserDAO> {
     /**
      * Instantiates a new User repository.
      *
-     * @param dslContext the dsl context
+     * @param dslContext the DSL context
      */
     public UserRepository(DSLContext dslContext) {
         this.dsl = dslContext;
@@ -54,17 +54,18 @@ public class UserRepository implements JOOQRepository<UserDAO> {
         // Save user roles
         if (dao.getRoles() != null && !dao.getRoles().isEmpty()) {
             for (RoleDAO roleDAO : dao.getRoles()) {
-
-                Record record = dsl.selectFrom(AuthRole.AUTH_ROLE)
+                AuthRoleRecord roleRecord = dsl.selectFrom(AuthRole.AUTH_ROLE)
                         .where(AuthRole.AUTH_ROLE.ROLE_TYPE.eq(roleDAO.getRoleType()))
                         .fetchOne();
 
-                dsl.insertInto(AuthUserRole.AUTH_USER_ROLE)
-                        .set(dsl.newRecord(AuthUserRole.AUTH_USER_ROLE, new AuthUserRoleRecord(
-                                savedUserDAO.getId(),
-                                record.get(AuthRole.AUTH_ROLE.ID)
-                        )))
-                        .execute();
+                if (roleRecord != null) {
+                    dsl.insertInto(AuthUserRole.AUTH_USER_ROLE)
+                            .set(dsl.newRecord(AuthUserRole.AUTH_USER_ROLE, new AuthUserRoleRecord(
+                                    savedUserDAO.getId(),
+                                    roleRecord.getId()
+                            )))
+                            .execute();
+                }
             }
             savedUserDAO.setRoles(new HashSet<>(dao.getRoles()));
         }
@@ -104,17 +105,18 @@ public class UserRepository implements JOOQRepository<UserDAO> {
                     .execute();
 
             for (RoleDAO roleDAO : userDAO.getRoles()) {
-
-                Record record = dsl.selectFrom(AuthRole.AUTH_ROLE)
+                AuthRoleRecord roleRecord = dsl.selectFrom(AuthRole.AUTH_ROLE)
                         .where(AuthRole.AUTH_ROLE.ROLE_TYPE.eq(roleDAO.getRoleType()))
                         .fetchOne();
 
-                dsl.insertInto(AuthUserRole.AUTH_USER_ROLE)
-                        .set(dsl.newRecord(AuthUserRole.AUTH_USER_ROLE, new AuthUserRoleRecord(
-                                userDAO.getId(),
-                                record.get(AuthRole.AUTH_ROLE.ID)
-                        )))
-                        .execute();
+                if (roleRecord != null) {
+                    dsl.insertInto(AuthUserRole.AUTH_USER_ROLE)
+                            .set(dsl.newRecord(AuthUserRole.AUTH_USER_ROLE, new AuthUserRoleRecord(
+                                    userDAO.getId(),
+                                    roleRecord.getId()
+                            )))
+                            .execute();
+                }
             }
         }
 
@@ -153,6 +155,7 @@ public class UserRepository implements JOOQRepository<UserDAO> {
 
     @Override
     public Optional<UserDAO> findById(Long userId) {
+
         AuthUserRecord authUserRecord = dsl.selectFrom(AuthUser.AUTH_USER)
                 .where(AuthUser.AUTH_USER.ID.eq(userId))
                 .fetchOne();
@@ -168,7 +171,7 @@ public class UserRepository implements JOOQRepository<UserDAO> {
                 .from(AuthRole.AUTH_ROLE)
                 .join(AuthUserRole.AUTH_USER_ROLE)
                 .on(AuthUserRole.AUTH_USER_ROLE.ROLE_ID.eq(AuthRole.AUTH_ROLE.ID))
-                .where(AuthUserRole.AUTH_USER_ROLE.USER_ID.eq(userId))
+                .where(AuthUserRole.AUTH_USER_ROLE.USER_ID.eq(userDAO.getId()))
                 .fetchInto(RoleDAO.class);
 
         userDAO.setRoles(new HashSet<>(roles));
@@ -180,7 +183,9 @@ public class UserRepository implements JOOQRepository<UserDAO> {
                     .where(Department.DEPARTMENT.ID.eq(userDAO.getDepartment().getId()))
                     .fetchOneInto(DepartmentDAO.class);
 
-            userDAO.getDepartment().setName(departmentDAO.getName());
+            if (departmentDAO != null) {
+                userDAO.getDepartment().setName(departmentDAO.getName());
+            }
         }
 
         return Optional.of(userDAO);
@@ -188,11 +193,10 @@ public class UserRepository implements JOOQRepository<UserDAO> {
 
     @Override
     public List<UserDAO> findAll(Integer requestedPage, Integer requestedPageSize) {
-
         int page = requestedPage == null ? JOOQRepository.DEFAULT_PAGE_NUMBER : requestedPage;
         int size = requestedPageSize == null ? JOOQRepository.DEFAULT_PAGE_SIZE : requestedPageSize;
 
-        SelectSeekStep1<Record, Integer> select = (SelectSeekStep1<Record, Integer>) dsl.select()
+        SelectLimitPercentAfterOffsetStep<Record> select = dsl.select()
                 .from(AuthUser.AUTH_USER)
                 .leftJoin(AuthUserRole.AUTH_USER_ROLE)
                 .on(AuthUser.AUTH_USER.ID.eq(AuthUserRole.AUTH_USER_ROLE.USER_ID))
@@ -200,24 +204,33 @@ public class UserRepository implements JOOQRepository<UserDAO> {
                 .on(AuthUserRole.AUTH_USER_ROLE.ROLE_ID.eq(AuthRole.AUTH_ROLE.ID))
                 .leftJoin(Department.DEPARTMENT)
                 .on(AuthUser.AUTH_USER.DEPARTMENT_ID.eq(Department.DEPARTMENT.ID))
-                .orderBy(AuthUser.AUTH_USER.ID)
+                .orderBy(AuthUser.AUTH_USER.ID.asc())
                 .offset(page * size)
                 .limit(size);
 
         Result<Record> result = select.fetch();
 
-        return result.stream()
-                .collect(groupingBy(record1 -> record1.into(AuthUser.AUTH_USER).into(UserDAO.class),
-                        mapping(record2 -> record2.into(AuthRole.AUTH_ROLE).into(RoleDAO.class), toSet())))
-                .entrySet().stream()
+        Map<AuthUserRecord, List<AuthRoleRecord>> userRoleMap = result.stream()
+                .collect(groupingBy(
+                        r -> r.into(AuthUser.AUTH_USER),
+                        mapping(r -> r.into(AuthRole.AUTH_ROLE), toList())
+                ));
+
+        return userRoleMap.entrySet().stream()
                 .map(entry -> {
-                    UserDAO userDAO = entry.getKey();
-                    Set<RoleDAO> roles = entry.getValue();
+                    AuthUserRecord authUserRecord = entry.getKey();
+                    UserDAO userDAO = authUserRecord.into(UserDAO.class);
+                    userDAO.setPassword(null);
+                    List<AuthRoleRecord> roleRecords = entry.getValue();
+                    Set<RoleDAO> roles = roleRecords.stream()
+                            .map(record1 -> record1.into(AuthRole.AUTH_ROLE).into(RoleDAO.class))
+                            .collect(toSet());
                     userDAO.setRoles(roles);
                     return userDAO;
                 })
                 .toList();
     }
+
 
     /**
      * Find by username optional.
@@ -246,7 +259,12 @@ public class UserRepository implements JOOQRepository<UserDAO> {
 
         userDAO.setRoles(new HashSet<>(roles));
 
-
         return Optional.of(userDAO);
     }
+
+    @Override
+    public int count() {
+        return dsl.fetchCount(AuthUser.AUTH_USER);
+    }
+
 }

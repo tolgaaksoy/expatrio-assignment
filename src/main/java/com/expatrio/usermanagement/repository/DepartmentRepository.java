@@ -4,9 +4,6 @@ import com.expatrio.usermanagement.model.dao.DepartmentDAO;
 import com.expatrio.usermanagement.model.tables.Department;
 import com.expatrio.usermanagement.model.tables.records.DepartmentRecord;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectSeekStep1;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,16 +77,17 @@ public class DepartmentRepository implements JOOQRepository<DepartmentDAO> {
         int page = requestedPage == null ? JOOQRepository.DEFAULT_PAGE_NUMBER : requestedPage;
         int size = requestedPageSize == null ? JOOQRepository.DEFAULT_PAGE_SIZE : requestedPageSize;
 
-        SelectSeekStep1<Record, Integer> select = (SelectSeekStep1<Record, Integer>) dsl.select()
+        return dsl.select()
                 .from(Department.DEPARTMENT)
                 .orderBy(Department.DEPARTMENT.ID)
                 .offset(page * size)
-                .limit(size);
-
-        Result<Record> result = select.fetch();
-
-        return result.stream()
-                .map(record -> record.into(DepartmentDAO.class))
-                .collect(java.util.stream.Collectors.toList());
+                .limit(size)
+                .fetchInto(DepartmentDAO.class);
     }
+
+    @Override
+    public int count() {
+        return dsl.fetchCount(Department.DEPARTMENT);
+    }
+
 }
