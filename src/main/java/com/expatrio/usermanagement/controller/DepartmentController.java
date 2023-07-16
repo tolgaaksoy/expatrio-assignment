@@ -115,4 +115,15 @@ public class DepartmentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/averageSalary")
+    public ResponseEntity<DepartmentResponse> getAverageSalaryByDepartment() {
+        DepartmentResponse response = DepartmentResponse.builder()
+                .departmentAverageSalaryList(departmentService.getAverageSalaryPerDepartment())
+                .status(HttpStatus.OK.value())
+                .timestamp(Instant.now())
+                .message("Average salary by department retrieved successfully")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

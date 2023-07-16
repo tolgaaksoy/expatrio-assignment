@@ -1,6 +1,7 @@
 package com.expatrio.usermanagement.service;
 
 import com.expatrio.usermanagement.model.dao.DepartmentDAO;
+import com.expatrio.usermanagement.model.payload.DepartmentAverageSalaryDto;
 import com.expatrio.usermanagement.model.payload.request.CreateDepartmentRequest;
 import com.expatrio.usermanagement.model.payload.request.UpdateDepartmentRequest;
 
@@ -51,4 +52,6 @@ public interface DepartmentService {
      * @return the all departments
      */
     List<DepartmentDAO> getAllDepartments(Integer page, Integer size);
+
+    List<DepartmentAverageSalaryDto> getAverageSalaryPerDepartment();
 }

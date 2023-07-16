@@ -1,6 +1,7 @@
 package com.expatrio.usermanagement.model.payload.response;
 
 import com.expatrio.usermanagement.model.dao.DepartmentDAO;
+import com.expatrio.usermanagement.model.payload.DepartmentAverageSalaryDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,5 +22,7 @@ public class DepartmentResponse extends BaseResponse {
 
     private DepartmentDAO department;
     private List<DepartmentDAO> departmentList;
+
+    private List<DepartmentAverageSalaryDto> departmentAverageSalaryList;
 
 }

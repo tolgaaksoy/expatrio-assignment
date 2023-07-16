@@ -3,6 +3,7 @@ package com.expatrio.usermanagement.service.impl;
 import com.expatrio.usermanagement.exception.DepartmentNotFoundException;
 import com.expatrio.usermanagement.mapper.DepartmentMapper;
 import com.expatrio.usermanagement.model.dao.DepartmentDAO;
+import com.expatrio.usermanagement.model.payload.DepartmentAverageSalaryDto;
 import com.expatrio.usermanagement.model.payload.request.CreateDepartmentRequest;
 import com.expatrio.usermanagement.model.payload.request.UpdateDepartmentRequest;
 import com.expatrio.usermanagement.repository.DepartmentRepository;
@@ -106,6 +107,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public List<DepartmentDAO> getAllDepartments(Integer page, Integer size) {
         return departmentRepository.findAll(page, size);
+    }
+
+    @Override
+    public List<DepartmentAverageSalaryDto> getAverageSalaryPerDepartment() {
+        return departmentRepository.getAverageSalaryPerDepartment();
     }
 
 }

@@ -1,6 +1,8 @@
 package com.expatrio.usermanagement.repository;
 
 import com.expatrio.usermanagement.model.dao.DepartmentDAO;
+import com.expatrio.usermanagement.model.payload.DepartmentAverageSalaryDto;
+import com.expatrio.usermanagement.model.tables.AuthUser;
 import com.expatrio.usermanagement.model.tables.Department;
 import com.expatrio.usermanagement.model.tables.records.DepartmentRecord;
 import org.jooq.DSLContext;
@@ -9,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.jooq.impl.DSL.avg;
 
 /**
  * The type Department repository.
@@ -88,6 +92,15 @@ public class DepartmentRepository implements JOOQRepository<DepartmentDAO> {
     @Override
     public int count() {
         return dsl.fetchCount(Department.DEPARTMENT);
+    }
+
+    public List<DepartmentAverageSalaryDto> getAverageSalaryPerDepartment() {
+        return dsl.select(Department.DEPARTMENT.ID, Department.DEPARTMENT.NAME, avg(AuthUser.AUTH_USER.SALARY))
+                .from(Department.DEPARTMENT)
+                .leftJoin(AuthUser.AUTH_USER)
+                .on(AuthUser.AUTH_USER.DEPARTMENT_ID.eq(Department.DEPARTMENT.ID))
+                .groupBy(Department.DEPARTMENT.ID, Department.DEPARTMENT.NAME)
+                .fetchInto(DepartmentAverageSalaryDto.class);
     }
 
 }
