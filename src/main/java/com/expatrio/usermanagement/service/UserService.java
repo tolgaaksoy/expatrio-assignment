@@ -1,8 +1,7 @@
 package com.expatrio.usermanagement.service;
 
-import com.expatrio.usermanagement.model.payload.request.CreateUserRequest;
-import com.expatrio.usermanagement.model.payload.request.UpdateUserRequest;
 import com.expatrio.usermanagement.model.dao.UserDAO;
+import com.expatrio.usermanagement.model.payload.request.UpdateUserRequest;
 
 import java.util.List;
 
@@ -10,13 +9,6 @@ import java.util.List;
  * The interface User service.
  */
 public interface UserService {
-    /**
-     * Create user user dao.
-     *
-     * @param request the request
-     * @return the user dao
-     */
-    UserDAO createUser(CreateUserRequest request);
 
     /**
      * Update user user dao.

@@ -1,6 +1,5 @@
 package com.expatrio.usermanagement.controller;
 
-import com.expatrio.usermanagement.model.payload.request.CreateUserRequest;
 import com.expatrio.usermanagement.model.payload.request.UpdateUserRequest;
 import com.expatrio.usermanagement.model.payload.response.UserResponse;
 import com.expatrio.usermanagement.service.UserService;
@@ -26,23 +25,6 @@ public class UserController {
      */
     public UserController(UserService userService) {
         this.userService = userService;
-    }
-
-    /**
-     * Create user response entity.
-     *
-     * @param request the request
-     * @return the response entity
-     */
-    @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
-        UserResponse response = UserResponse.builder()
-                .user(userService.createUser(request))
-                .status(201)
-                .timestamp(Instant.now())
-                .message("User created successfully")
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     /**

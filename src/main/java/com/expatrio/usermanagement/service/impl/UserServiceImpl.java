@@ -3,7 +3,6 @@ package com.expatrio.usermanagement.service.impl;
 import com.expatrio.usermanagement.exception.UserNotFoundException;
 import com.expatrio.usermanagement.mapper.UserMapper;
 import com.expatrio.usermanagement.model.dao.UserDAO;
-import com.expatrio.usermanagement.model.payload.request.CreateUserRequest;
 import com.expatrio.usermanagement.model.payload.request.UpdateUserRequest;
 import com.expatrio.usermanagement.repository.UserRepository;
 import com.expatrio.usermanagement.service.UserService;
@@ -34,18 +33,6 @@ public class UserServiceImpl implements UserService {
                            UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-    }
-
-    /**
-     * Creates a new user with the given user details and returns the created user.
-     *
-     * @param request the request containing the user details
-     * @return the created user
-     */
-    @Override
-    public UserDAO createUser(CreateUserRequest request) {
-        UserDAO userDAO = userMapper.toEntity(request);
-        return userRepository.save(userDAO);
     }
 
     /**
