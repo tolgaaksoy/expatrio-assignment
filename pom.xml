@@ -11,7 +11,7 @@
 
     <groupId>com.expatrio</groupId>
     <artifactId>userManagement</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>userManagement</name>
     <description>userManagement</description>
     <properties>
