@@ -71,6 +71,7 @@ public class UserRepository implements JOOQRepository<UserDAO> {
             savedUserDAO.setDepartment(dao.getDepartment());
         }
 
+        savedUserDAO.setPassword(null);
         return savedUserDAO;
     }
 
@@ -210,4 +211,28 @@ public class UserRepository implements JOOQRepository<UserDAO> {
                 .toList();
     }
 
+    public Optional<UserDAO> findByUsername(String username) {
+        AuthUserRecord authUserRecord = dsl.selectFrom(AuthUser.AUTH_USER)
+                .where(AuthUser.AUTH_USER.USERNAME.eq(username))
+                .fetchOne();
+
+        if (authUserRecord == null) {
+            return Optional.empty();
+        }
+
+        UserDAO userDAO = authUserRecord.into(UserDAO.class);
+
+        // Fetch user roles
+        List<RoleDAO> roles = dsl.select(AuthRole.AUTH_ROLE.ID, AuthRole.AUTH_ROLE.ROLE_TYPE)
+                .from(AuthRole.AUTH_ROLE)
+                .join(AuthUserRole.AUTH_USER_ROLE)
+                .on(AuthUserRole.AUTH_USER_ROLE.ROLE_ID.eq(AuthRole.AUTH_ROLE.ID))
+                .where(AuthUserRole.AUTH_USER_ROLE.USER_ID.eq(userDAO.getId()))
+                .fetchInto(RoleDAO.class);
+
+        userDAO.setRoles(new HashSet<>(roles));
+
+
+        return Optional.of(userDAO);
+    }
 }
