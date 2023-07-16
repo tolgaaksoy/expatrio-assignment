@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * The type Swagger config.
+ */
 @Configuration
 @SecurityScheme(
         name = "Bearer Authentication",

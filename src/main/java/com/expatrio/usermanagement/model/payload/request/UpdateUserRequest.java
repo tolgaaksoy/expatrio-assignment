@@ -4,6 +4,9 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+/**
+ * The type Update user request.
+ */
 @Getter
 @Setter
 @Builder

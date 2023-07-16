@@ -8,6 +8,9 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+/**
+ * The type Login response.
+ */
 @Getter
 @Setter
 @SuperBuilder

@@ -2,6 +2,9 @@ package com.expatrio.usermanagement.model.payload.request;
 
 import lombok.*;
 
+/**
+ * The type Login request.
+ */
 @Getter
 @Setter
 @Builder

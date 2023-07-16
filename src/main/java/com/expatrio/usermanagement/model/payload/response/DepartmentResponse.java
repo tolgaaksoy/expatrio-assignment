@@ -9,6 +9,9 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+/**
+ * The type Department response.
+ */
 @Getter
 @Setter
 @SuperBuilder

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 
+/**
+ * The type Jwt utils.
+ */
 @Slf4j
 @Component
 public class JwtUtils {
@@ -22,6 +25,12 @@ public class JwtUtils {
     @Value("${security.jwt.token.expirationMs}")
     private int jwtExpirationMs;
 
+    /**
+     * Generate jwt token string.
+     *
+     * @param authentication the authentication
+     * @return the string
+     */
     public String generateJwtToken(Authentication authentication) {
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
@@ -38,11 +47,23 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
+    /**
+     * Gets user name from jwt token.
+     *
+     * @param token the token
+     * @return the user name from jwt token
+     */
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key()).build()
                 .parseClaimsJws(token).getBody().getSubject();
     }
 
+    /**
+     * Validate jwt token boolean.
+     *
+     * @param authToken the auth token
+     * @return the boolean
+     */
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);

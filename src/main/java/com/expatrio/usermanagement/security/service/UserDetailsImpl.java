@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * The type User details.
+ */
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
 
@@ -22,6 +25,14 @@ public class UserDetailsImpl implements UserDetails {
 
     private final Collection<? extends GrantedAuthority> authorities;
 
+    /**
+     * Instantiates a new User details.
+     *
+     * @param id          the id
+     * @param username    the username
+     * @param password    the password
+     * @param authorities the authorities
+     */
     public UserDetailsImpl(Long id, String username, String password,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
@@ -30,6 +41,12 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
+    /**
+     * Build user details.
+     *
+     * @param user the user
+     * @return the user details
+     */
     public static UserDetailsImpl build(UserDAO user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleType()))
@@ -47,6 +64,11 @@ public class UserDetailsImpl implements UserDetails {
         return authorities;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public Long getId() {
         return id;
     }

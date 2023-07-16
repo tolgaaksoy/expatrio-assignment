@@ -9,6 +9,9 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+/**
+ * The type User response.
+ */
 @Getter
 @Setter
 @SuperBuilder
@@ -17,6 +20,9 @@ import java.util.List;
 public class UserResponse extends BaseResponse {
 
     private UserDAO user;
+    /**
+     * The User list.
+     */
     List<UserDAO> userList;
 
 }

@@ -17,6 +17,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * The type Auth token filter.
+ */
 @Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
 

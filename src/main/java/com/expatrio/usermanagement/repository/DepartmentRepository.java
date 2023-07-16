@@ -13,11 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Department repository.
+ */
 @Repository
 public class DepartmentRepository implements JOOQRepository<DepartmentDAO> {
 
     private final DSLContext dsl;
 
+    /**
+     * Instantiates a new Department repository.
+     *
+     * @param dsl the dsl
+     */
     public DepartmentRepository(DSLContext dsl) {
         this.dsl = dsl;
     }

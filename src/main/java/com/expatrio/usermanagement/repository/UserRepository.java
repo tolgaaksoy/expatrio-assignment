@@ -21,11 +21,19 @@ import java.util.*;
 
 import static java.util.stream.Collectors.*;
 
+/**
+ * The type User repository.
+ */
 @Repository
 public class UserRepository implements JOOQRepository<UserDAO> {
 
     private final DSLContext dsl;
 
+    /**
+     * Instantiates a new User repository.
+     *
+     * @param dslContext the dsl context
+     */
     public UserRepository(DSLContext dslContext) {
         this.dsl = dslContext;
     }
@@ -211,6 +219,12 @@ public class UserRepository implements JOOQRepository<UserDAO> {
                 .toList();
     }
 
+    /**
+     * Find by username optional.
+     *
+     * @param username the username
+     * @return the optional
+     */
     public Optional<UserDAO> findByUsername(String username) {
         AuthUserRecord authUserRecord = dsl.selectFrom(AuthUser.AUTH_USER)
                 .where(AuthUser.AUTH_USER.USERNAME.eq(username))

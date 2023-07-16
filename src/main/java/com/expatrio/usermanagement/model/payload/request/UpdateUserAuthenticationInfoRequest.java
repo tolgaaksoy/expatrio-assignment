@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * The type Update user authentication info request.
+ */
 @Getter
 @Setter
 @Builder

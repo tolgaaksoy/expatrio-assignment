@@ -23,6 +23,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The type Auth service.
+ */
 @Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -34,6 +37,15 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    /**
+     * Instantiates a new Auth service.
+     *
+     * @param authenticationManager the authentication manager
+     * @param userRepository        the user repository
+     * @param encoder               the encoder
+     * @param jwtUtils              the jwt utils
+     * @param userMapper            the user mapper
+     */
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            UserRepository userRepository,
                            PasswordEncoder encoder,

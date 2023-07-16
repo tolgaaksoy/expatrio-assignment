@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Department service.
+ */
 @Slf4j
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
@@ -21,6 +24,12 @@ public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentMapper departmentMapper;
 
 
+    /**
+     * Instantiates a new Department service.
+     *
+     * @param departmentRepository the department repository
+     * @param departmentMapper     the department mapper
+     */
     public DepartmentServiceImpl(DepartmentRepository departmentRepository,
                                  DepartmentMapper departmentMapper) {
         this.departmentRepository = departmentRepository;
