@@ -45,6 +45,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDAO updateUser(UpdateUserRequest request) {
         UserDAO userDAO = userRepository.update(userMapper.toEntity(request));
+        userDAO.setPassword(null);
+        userDAO.setUsername(null);
+        userDAO.setRoles(null);
         if (userDAO == null) {
             throw new UserNotFoundException(request.getId());
         }
