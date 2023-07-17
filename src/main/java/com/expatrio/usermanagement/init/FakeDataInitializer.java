@@ -48,9 +48,16 @@ public class FakeDataInitializer {
 
             for (int i = 0; i < 100; i++) {
                 String name = faker.name().fullName();
+                String username = name.toLowerCase()
+                        .replace(" ", ".")
+                        .replace("'", "")
+                        .replace("..", ".");
+                if (username.endsWith(".")) {
+                    username = username.substring(0, username.length() - 1);
+                }
                 UserDAO userDAO = new UserDAO();
                 userDAO.setPassword(encoder.encode("password"));
-                userDAO.setUsername(name.toLowerCase().replace(" ", "."));
+                userDAO.setUsername(username);
                 RoleDAO roleDAO = new RoleDAO();
                 if (faker.number().randomNumber() % 2 == 0) {
                     roleDAO.setRoleType("ROLE_USER");
@@ -60,7 +67,7 @@ public class FakeDataInitializer {
                 userDAO.setRoles(Set.of(roleDAO));
                 userDAO.setName(name);
                 userDAO.setDepartment(departments.get(faker.number().numberBetween(0, departments.size())));
-                userDAO.setSalary(BigDecimal.valueOf(faker.number().randomDouble(2, 1000, 10000)));
+                userDAO.setSalary(BigDecimal.valueOf(faker.number().numberBetween(300, 1000) * 100L));
                 userRepository.save(userDAO);
             }
         }

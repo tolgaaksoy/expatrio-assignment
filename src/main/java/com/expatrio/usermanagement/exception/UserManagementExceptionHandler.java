@@ -51,4 +51,14 @@ public class UserManagementExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(value = UsernameAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public BaseResponse handleUsernameAlreadyExistException(UsernameAlreadyExistException ex, WebRequest request) {
+        return BaseResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .message(ex.getMessage())
+                .timestamp(Instant.now())
+                .build();
+    }
+
 }

@@ -2,7 +2,7 @@
 CREATE TABLE auth_user
 (
     id            BIGSERIAL PRIMARY KEY,
-    username      VARCHAR(255),
+    username      VARCHAR(255) UNIQUE, -- Add UNIQUE constraint
     password      VARCHAR(255),
     name          VARCHAR(255),
     department_id BIGINT,

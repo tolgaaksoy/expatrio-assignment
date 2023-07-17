@@ -1,6 +1,7 @@
 package com.expatrio.usermanagement.service.impl;
 
 import com.expatrio.usermanagement.exception.UserNotFoundException;
+import com.expatrio.usermanagement.exception.UsernameAlreadyExistException;
 import com.expatrio.usermanagement.mapper.UserMapper;
 import com.expatrio.usermanagement.model.dao.UserDAO;
 import com.expatrio.usermanagement.model.payload.request.CreateUserRequest;
@@ -95,6 +96,9 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public UserDAO createUser(CreateUserRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UsernameAlreadyExistException(request.getUsername());
+        }
         UserDAO userDAO = userMapper.toEntity(request);
         userDAO.setPassword(encoder.encode(request.getPassword()));
         return userRepository.save(userDAO);
@@ -109,6 +113,9 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public UserDAO updateUserAuthenticationInformation(UpdateUserAuthenticationInfoRequest request) {
+        if (request.getUsername() != null && userRepository.existsByUsername(request.getUsername())) {
+            throw new UsernameAlreadyExistException(request.getUsername());
+        }
         UserDAO userDAO = userRepository.update(userMapper.toEntity(request));
         if (userDAO == null) {
             throw new UserNotFoundException(request.getId());

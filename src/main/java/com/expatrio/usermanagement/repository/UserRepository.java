@@ -267,4 +267,9 @@ public class UserRepository implements JOOQRepository<UserDAO> {
         return dsl.fetchCount(AuthUser.AUTH_USER);
     }
 
+    public boolean existsByUsername(String username) {
+        return dsl.fetchExists(dsl.selectFrom(AuthUser.AUTH_USER)
+                .where(AuthUser.AUTH_USER.USERNAME.eq(username)));
+    }
+
 }
