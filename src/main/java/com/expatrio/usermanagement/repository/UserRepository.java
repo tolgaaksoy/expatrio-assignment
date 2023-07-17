@@ -91,11 +91,25 @@ public class UserRepository implements JOOQRepository<UserDAO> {
             return null;
         }
 
-        // Update user information
-        int updatedRows = dsl.update(AuthUser.AUTH_USER)
-                .set(dsl.newRecord(AuthUser.AUTH_USER, userDAO))
+        // Get the existing user record
+        AuthUserRecord existingUserRecord = dsl.selectFrom(AuthUser.AUTH_USER)
                 .where(AuthUser.AUTH_USER.ID.eq(userDAO.getId()))
-                .execute();
+                .fetchOne();
+
+        if (existingUserRecord == null) {
+            return null; // User not found
+        }
+
+        // Update user information
+        AuthUserRecord updatedUserRecord = dsl.newRecord(AuthUser.AUTH_USER, userDAO);
+        if (userDAO.getUsername() == null) {
+            updatedUserRecord.setUsername(existingUserRecord.getUsername());
+        }
+        if (userDAO.getPassword() == null) {
+            updatedUserRecord.setPassword(existingUserRecord.getPassword());
+        }
+
+        int updatedRows = updatedUserRecord.update();
 
         // Update user's roles
         if (userDAO.getRoles() != null && !userDAO.getRoles().isEmpty()) {
@@ -128,7 +142,7 @@ public class UserRepository implements JOOQRepository<UserDAO> {
                     .execute();
         }
 
-        return updatedRows > 0 ? userDAO : null;
+        return updatedRows > 0 ? existingUserRecord.into(UserDAO.class) : null;
     }
 
     @Transactional
@@ -270,6 +284,11 @@ public class UserRepository implements JOOQRepository<UserDAO> {
     public boolean existsByUsername(String username) {
         return dsl.fetchExists(dsl.selectFrom(AuthUser.AUTH_USER)
                 .where(AuthUser.AUTH_USER.USERNAME.eq(username)));
+    }
+
+    public boolean existsById(Long id) {
+        return dsl.fetchExists(dsl.selectFrom(AuthUser.AUTH_USER)
+                .where(AuthUser.AUTH_USER.ID.eq(id)));
     }
 
 }

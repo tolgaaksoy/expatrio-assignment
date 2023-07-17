@@ -113,6 +113,9 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public UserDAO updateUserAuthenticationInformation(UpdateUserAuthenticationInfoRequest request) {
+        if (!userRepository.existsById(request.getId())) {
+            throw new UserNotFoundException(request.getId());
+        }
         if (request.getUsername() != null && userRepository.existsByUsername(request.getUsername())) {
             throw new UsernameAlreadyExistException(request.getUsername());
         }

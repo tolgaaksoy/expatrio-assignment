@@ -44,12 +44,14 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDAO updateUser(UpdateUserRequest request) {
-        UserDAO userDAO = userRepository.update(userMapper.toEntity(request));
-        userDAO.setPassword(null);
-        userDAO.setUsername(null);
-        userDAO.setRoles(null);
-        if (userDAO == null) {
+        if (!userRepository.existsById(request.getId())) {
             throw new UserNotFoundException(request.getId());
+        }
+        UserDAO userDAO = userRepository.update(userMapper.toEntity(request));
+        if (userDAO != null) {
+            userDAO.setPassword(null);
+            userDAO.setUsername(null);
+            userDAO.setRoles(null);
         }
         return userDAO;
     }
