@@ -119,13 +119,7 @@ public class AuthServiceImpl implements AuthService {
         if (request.getUsername() != null && userRepository.existsByUsername(request.getUsername())) {
             throw new UsernameAlreadyExistException(request.getUsername());
         }
-        UserDAO userDAO = userRepository.update(userMapper.toEntity(request));
-        if (userDAO == null) {
-            throw new UserNotFoundException(request.getId());
-        }
-        return userDAO;
+        return userRepository.update(userMapper.toEntity(request));
     }
 
 }
-
-
