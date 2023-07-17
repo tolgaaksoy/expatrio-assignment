@@ -34,6 +34,8 @@ public class FakeDataInitializer {
 
     @EventListener(ApplicationReadyEvent.class)
     public void applicationStart() {
+        addExpatrioUser();
+        log.info("Fake data initialization started");
         Faker faker = new Faker();
         if (departmentRepository.count() == 0) {
             for (String departmentName : DEPARTMENTS) {
@@ -44,6 +46,17 @@ public class FakeDataInitializer {
         }
 
         if (userRepository.count() == 0) {
+
+            UserDAO admin = new UserDAO();
+            admin.setName("expatrio");
+            admin.setUsername("expatrio");
+            admin.setPassword(encoder.encode("expatrio"));
+            RoleDAO adminRole = new RoleDAO();
+            adminRole.setRoleType("ROLE_ADMIN");
+            admin.setRoles(Set.of(adminRole));
+
+            userRepository.save(admin);
+
             List<DepartmentDAO> departments = departmentRepository.findAll(0, 10);
 
             for (int i = 0; i < 100; i++) {
@@ -70,6 +83,26 @@ public class FakeDataInitializer {
                 userDAO.setSalary(BigDecimal.valueOf(faker.number().numberBetween(300, 1000) * 100L));
                 userRepository.save(userDAO);
             }
+        }
+        log.info("Fake data initialization finished");
+    }
+
+    private void addExpatrioUser() {
+        String expatrio = "expatrio";
+        if (!userRepository.existsByUsername(expatrio)) {
+
+            UserDAO admin = new UserDAO();
+            admin.setName(expatrio);
+            admin.setUsername(expatrio);
+            admin.setPassword(encoder.encode(expatrio));
+            RoleDAO adminRole = new RoleDAO();
+            adminRole.setRoleType("ROLE_ADMIN");
+            admin.setRoles(Set.of(adminRole));
+
+            userRepository.save(admin);
+            log.info("Expatrio user added");
+            log.info("Username: expatrio");
+            log.info("Password: expatrio");
         }
     }
 }
