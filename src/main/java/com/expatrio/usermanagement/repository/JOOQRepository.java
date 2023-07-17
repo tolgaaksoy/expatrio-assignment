@@ -61,4 +61,6 @@ public interface JOOQRepository<T> {
     List<T> findAll(Integer page, Integer pageSize);
 
     int count();
+
+    boolean existsById(Long id);
 }

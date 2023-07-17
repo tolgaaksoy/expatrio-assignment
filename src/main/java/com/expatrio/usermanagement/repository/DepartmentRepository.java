@@ -94,6 +94,12 @@ public class DepartmentRepository implements JOOQRepository<DepartmentDAO> {
         return dsl.fetchCount(Department.DEPARTMENT);
     }
 
+    @Override
+    public boolean existsById(Long id) {
+        return dsl.fetchExists(Department.DEPARTMENT, Department.DEPARTMENT.ID.eq(id));
+    }
+
+
     public List<DepartmentAverageSalaryDto> getAverageSalaryPerDepartment() {
         return dsl.select(Department.DEPARTMENT.ID, Department.DEPARTMENT.NAME, avg(AuthUser.AUTH_USER.SALARY))
                 .from(Department.DEPARTMENT)

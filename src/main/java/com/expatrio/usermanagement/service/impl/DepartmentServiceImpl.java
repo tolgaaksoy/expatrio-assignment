@@ -59,11 +59,10 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public DepartmentDAO updateDepartment(UpdateDepartmentRequest request) {
-        DepartmentDAO departmentDAO = departmentRepository.update(departmentMapper.toEntity(request));
-        if (departmentDAO == null) {
+        if (!departmentRepository.existsById(request.getId())) {
             throw new DepartmentNotFoundException(request.getId());
         }
-        return departmentDAO;
+        return departmentRepository.update(departmentMapper.toEntity(request));
     }
 
     /**

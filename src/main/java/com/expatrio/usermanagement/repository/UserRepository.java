@@ -286,6 +286,7 @@ public class UserRepository implements JOOQRepository<UserDAO> {
                 .where(AuthUser.AUTH_USER.USERNAME.eq(username)));
     }
 
+    @Override
     public boolean existsById(Long id) {
         return dsl.fetchExists(dsl.selectFrom(AuthUser.AUTH_USER)
                 .where(AuthUser.AUTH_USER.ID.eq(id)));
