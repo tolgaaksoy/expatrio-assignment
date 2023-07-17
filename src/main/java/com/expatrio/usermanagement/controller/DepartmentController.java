@@ -4,6 +4,7 @@ import com.expatrio.usermanagement.model.payload.request.CreateDepartmentRequest
 import com.expatrio.usermanagement.model.payload.request.UpdateDepartmentRequest;
 import com.expatrio.usermanagement.model.payload.response.DepartmentResponse;
 import com.expatrio.usermanagement.service.DepartmentService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class DepartmentController {
      * @return the response entity
      */
     @PostMapping
-    public ResponseEntity<DepartmentResponse> createDepartment(@RequestBody CreateDepartmentRequest request) {
+    public ResponseEntity<DepartmentResponse> createDepartment(@Valid @RequestBody CreateDepartmentRequest request) {
         DepartmentResponse response = DepartmentResponse.builder()
                 .department(departmentService.createDepartment(request))
                 .status(HttpStatus.CREATED.value())
@@ -52,7 +53,7 @@ public class DepartmentController {
      * @return the response entity
      */
     @PutMapping
-    public ResponseEntity<DepartmentResponse> updateDepartment(@RequestBody UpdateDepartmentRequest request) {
+    public ResponseEntity<DepartmentResponse> updateDepartment(@Valid @RequestBody UpdateDepartmentRequest request) {
         DepartmentResponse response = DepartmentResponse.builder()
                 .department(departmentService.updateDepartment(request))
                 .status(HttpStatus.OK.value())

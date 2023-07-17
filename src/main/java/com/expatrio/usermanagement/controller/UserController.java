@@ -3,6 +3,7 @@ package com.expatrio.usermanagement.controller;
 import com.expatrio.usermanagement.model.payload.request.UpdateUserRequest;
 import com.expatrio.usermanagement.model.payload.response.UserResponse;
 import com.expatrio.usermanagement.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class UserController {
      * @return the response entity
      */
     @PutMapping
-    public ResponseEntity<UserResponse> updateUser(@RequestBody UpdateUserRequest request) {
+    public ResponseEntity<UserResponse> updateUser(@Valid @RequestBody UpdateUserRequest request) {
         UserResponse response = UserResponse.builder()
                 .user(userService.updateUser(request))
                 .status(200)

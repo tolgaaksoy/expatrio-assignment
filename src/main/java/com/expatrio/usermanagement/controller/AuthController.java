@@ -6,6 +6,7 @@ import com.expatrio.usermanagement.model.payload.request.UpdateUserAuthenticatio
 import com.expatrio.usermanagement.model.payload.response.LoginResponse;
 import com.expatrio.usermanagement.model.payload.response.UserResponse;
 import com.expatrio.usermanagement.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class AuthController {
      * @return the response entity
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         LoginResponse response = authService.authenticateUser(loginRequest);
         response.setStatus(200);
         response.setTimestamp(Instant.now());
@@ -52,7 +53,7 @@ public class AuthController {
      * @return the response entity
      */
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
         UserResponse response = UserResponse.builder()
                 .user(authService.createUser(request))
                 .status(201)
@@ -69,7 +70,7 @@ public class AuthController {
      * @return the response entity
      */
     @PutMapping("/authInfo")
-    public ResponseEntity<UserResponse> updateUser(@RequestBody UpdateUserAuthenticationInfoRequest request) {
+    public ResponseEntity<UserResponse> updateUser(@Valid @RequestBody UpdateUserAuthenticationInfoRequest request) {
         UserResponse response = UserResponse.builder()
                 .user(authService.updateUserAuthenticationInformation(request))
                 .status(200)
