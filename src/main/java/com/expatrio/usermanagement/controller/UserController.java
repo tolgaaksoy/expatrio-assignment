@@ -6,6 +6,7 @@ import com.expatrio.usermanagement.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -34,6 +35,7 @@ public class UserController {
      * @param request the request
      * @return the response entity
      */
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @PutMapping
     public ResponseEntity<UserResponse> updateUser(@Valid @RequestBody UpdateUserRequest request) {
         UserResponse response = UserResponse.builder()
@@ -51,6 +53,7 @@ public class UserController {
      * @param id the id
      * @return the response entity
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id) {
         userService.deleteUserById(id);
@@ -68,6 +71,7 @@ public class UserController {
      * @param id the id
      * @return the user by id
      */
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         UserResponse response = UserResponse.builder()
@@ -86,6 +90,7 @@ public class UserController {
      * @param size the size
      * @return the all users
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<UserResponse> getAllUsers(@RequestParam(required = false) Integer page,
                                                     @RequestParam(required = false) Integer size) {

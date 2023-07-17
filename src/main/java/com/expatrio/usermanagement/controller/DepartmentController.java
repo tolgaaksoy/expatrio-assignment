@@ -7,6 +7,7 @@ import com.expatrio.usermanagement.service.DepartmentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -35,6 +36,7 @@ public class DepartmentController {
      * @param request the request
      * @return the response entity
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<DepartmentResponse> createDepartment(@Valid @RequestBody CreateDepartmentRequest request) {
         DepartmentResponse response = DepartmentResponse.builder()
@@ -52,6 +54,7 @@ public class DepartmentController {
      * @param request the request
      * @return the response entity
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping
     public ResponseEntity<DepartmentResponse> updateDepartment(@Valid @RequestBody UpdateDepartmentRequest request) {
         DepartmentResponse response = DepartmentResponse.builder()
@@ -69,6 +72,7 @@ public class DepartmentController {
      * @param id the id
      * @return the response entity
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<DepartmentResponse> deleteDepartment(@PathVariable Long id) {
         departmentService.deleteDepartment(id);
@@ -86,6 +90,7 @@ public class DepartmentController {
      * @param id the id
      * @return the department by id
      */
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/{id}")
     public ResponseEntity<DepartmentResponse> getDepartmentById(@PathVariable Long id) {
         DepartmentResponse response = DepartmentResponse.builder()
@@ -104,6 +109,7 @@ public class DepartmentController {
      * @param size the size
      * @return the all departments
      */
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping
     public ResponseEntity<DepartmentResponse> getAllDepartments(@RequestParam(defaultValue = "0") Integer page,
                                                                 @RequestParam(defaultValue = "10") Integer size) {
@@ -116,6 +122,7 @@ public class DepartmentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/averageSalary")
     public ResponseEntity<DepartmentResponse> getAverageSalaryByDepartment() {
         DepartmentResponse response = DepartmentResponse.builder()
