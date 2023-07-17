@@ -10,10 +10,20 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.time.Instant;
 
+/**
+ * The type User management exception handler.
+ */
 @Slf4j
 @RestControllerAdvice
 public class UserManagementExceptionHandler {
 
+    /**
+     * Handle t user not found exception base response.
+     *
+     * @param ex      the ex
+     * @param request the request
+     * @return the base response
+     */
     @ExceptionHandler(value = UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public BaseResponse handleTUserNotFoundException(UserNotFoundException ex, WebRequest request) {
@@ -24,11 +34,28 @@ public class UserManagementExceptionHandler {
                 .build();
     }
 
+    /**
+     * Handle t user not found exception base response.
+     *
+     * @param ex      the ex
+     * @param request the request
+     * @return the base response
+     */
     @ExceptionHandler(value = DepartmentNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public BaseResponse handleTUserNotFoundException(DepartmentNotFoundException ex, WebRequest request) {
         return BaseResponse.builder()
                 .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage())
+                .timestamp(Instant.now())
+                .build();
+    }
+
+    @ExceptionHandler(value = UsernameAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public BaseResponse handleUsernameAlreadyExistException(UsernameAlreadyExistException ex, WebRequest request) {
+        return BaseResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
                 .message(ex.getMessage())
                 .timestamp(Instant.now())
                 .build();

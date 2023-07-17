@@ -2,6 +2,9 @@ package com.expatrio.usermanagement.model.dao;
 
 import lombok.*;
 
+/**
+ * The type Department dao.
+ */
 @Getter
 @Setter
 @Builder

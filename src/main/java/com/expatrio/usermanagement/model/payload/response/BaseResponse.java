@@ -9,6 +9,9 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 
+/**
+ * The type Base response.
+ */
 @ToString
 @Data
 @SuperBuilder

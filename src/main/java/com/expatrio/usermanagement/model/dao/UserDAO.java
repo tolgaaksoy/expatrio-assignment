@@ -5,6 +5,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.Set;
 
+/**
+ * The type User dao.
+ */
 @Getter
 @Setter
 @Builder

@@ -78,10 +78,25 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -90,10 +105,39 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <files>
+                        <file>src/main/resources/application.properties</file>
+                    </files>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -147,10 +191,10 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <driver>org.postgresql.Driver</driver>
-                    <url>jdbc:postgresql://localhost:5432/user-management-db</url>
-                    <user>user-management-service</user>
-                    <password>password</password>
+                    <driver>${datasource.driver}</driver>
+                    <url>${datasource.jdbcUrl}</url>
+                    <user>${datasource.username}</user>
+                    <password>${datasource.password}</password>
                     <baselineOnMigrate>true</baselineOnMigrate>
                     <schemas>public</schemas>
                     <locations>
@@ -173,10 +217,10 @@
                         <configuration>
                             <!-- JDBC connection parameters -->
                             <jdbc>
-                                <driver>org.postgresql.Driver</driver>
-                                <url>jdbc:postgresql://localhost:5432/user-management-db</url>
-                                <user>user-management-service</user>
-                                <password>password</password>
+                                <driver>${datasource.driver}</driver>
+                                <url>${datasource.jdbcUrl}</url>
+                                <user>${datasource.username}</user>
+                                <password>${datasource.password}</password>
                             </jdbc>
                             <!-- Generator parameters -->
                             <generator>
